@@ -1,5 +1,6 @@
 import { Camera, Hammer, Cpu, GraduationCap } from 'lucide-react';
 import mesa from '../assets/images/mesa_kerf.jpg';
+import fotoPDE from '../assets/images/fotoPDE.jpg';
 
 const Projects = () => {
     return (
@@ -54,7 +55,7 @@ const Projects = () => {
                         </div>
                         {/* Cara TRASERA */}
                         <div className="absolute inset-0 w-full h-full bg-slate-900 rounded-3xl overflow-hidden border border-amber-700/50 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                            {/* Si arreglaste el import local, usá: src={mesaImg} */}
+
                             <img
                                 src={mesa}
                                 alt="Mesa con Kerf Bending"
@@ -85,11 +86,11 @@ const Projects = () => {
                             <Camera className="absolute -bottom-6 -right-6 text-purple-500/5 w-32 h-32" />
                         </div>
 
-                        {/* Cara TRASERA (Imagen de ejemplo de comida) */}
+
                         <div className="absolute inset-0 w-full h-full bg-slate-900 rounded-3xl overflow-hidden border border-purple-700/50 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                            {/* ACÁ IRÍA TU FOTO LOCAL DE COMIDA */}
+
                             <img
-                                src="https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?q=80&w=1000&auto=format&fit=crop"
+                                src={fotoPDE}
                                 alt="Food Photography"
                                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
                             />
