@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { db, storage } from '../firebase/config';
+import { db } from '../firebase/config';
 import {
     collection,
     addDoc,
@@ -10,16 +10,15 @@ import {
     onSnapshot,
     serverTimestamp,
 } from 'firebase/firestore';
-import {
-    ref,
-    uploadBytesResumable,
-    getDownloadURL,
-    deleteObject,
-} from 'firebase/storage';
-import { X, ChevronLeft, ChevronRight, Upload, Trash2, Loader2, ImagePlus, Images } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Trash2, Loader2, ImagePlus, Images } from 'lucide-react';
 import { toast } from 'sonner';
 
+const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
+
 const Gallery = ({ isOpen, onClose, user }) => {
+    const isAdmin = user && user.email === ADMIN_EMAIL;
     const [photos, setPhotos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
@@ -33,9 +32,9 @@ const Gallery = ({ isOpen, onClose, user }) => {
 
         const q = query(collection(db, 'gallery'), orderBy('createdAt', 'desc'));
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const photoList = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
+            const photoList = snapshot.docs.map((d) => ({
+                id: d.id,
+                ...d.data(),
             }));
             setPhotos(photoList);
             setLoading(false);
@@ -85,6 +84,22 @@ const Gallery = ({ isOpen, onClose, user }) => {
         });
     }, [photos.length]);
 
+    // Upload to Cloudinary (unsigned) then save metadata in Firestore
+    const uploadToCloudinary = async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', UPLOAD_PRESET);
+        formData.append('folder', 'gallery');
+
+        const response = await fetch(
+            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+            { method: 'POST', body: formData }
+        );
+
+        if (!response.ok) throw new Error('Cloudinary upload failed');
+        return await response.json();
+    };
+
     const handleUpload = async (e) => {
         const files = Array.from(e.target.files);
         if (files.length === 0) return;
@@ -93,7 +108,9 @@ const Gallery = ({ isOpen, onClose, user }) => {
         let uploaded = 0;
 
         try {
-            for (const file of files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+
                 // Validate file type
                 if (!file.type.startsWith('image/')) {
                     toast.error(`"${file.name}" no es una imagen válida`);
@@ -106,35 +123,21 @@ const Gallery = ({ isOpen, onClose, user }) => {
                     continue;
                 }
 
-                const fileName = `${Date.now()}_${file.name}`;
-                const storageRef = ref(storage, `gallery/${fileName}`);
-                const uploadTask = uploadBytesResumable(storageRef, file);
+                setUploadProgress(Math.round(((i) / files.length) * 100));
 
-                await new Promise((resolve, reject) => {
-                    uploadTask.on(
-                        'state_changed',
-                        (snapshot) => {
-                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                            setUploadProgress(Math.round(progress));
-                        },
-                        (error) => {
-                            console.error('Upload error:', error);
-                            toast.error(`Error subiendo "${file.name}"`);
-                            reject(error);
-                        },
-                        async () => {
-                            const url = await getDownloadURL(uploadTask.snapshot.ref);
-                            await addDoc(collection(db, 'gallery'), {
-                                url,
-                                fileName,
-                                storagePath: `gallery/${fileName}`,
-                                createdAt: serverTimestamp(),
-                            });
-                            uploaded++;
-                            resolve();
-                        }
-                    );
+                const result = await uploadToCloudinary(file);
+
+                // Save metadata to Firestore
+                await addDoc(collection(db, 'gallery'), {
+                    url: result.secure_url,
+                    publicId: result.public_id,
+                    width: result.width,
+                    height: result.height,
+                    createdAt: serverTimestamp(),
                 });
+
+                uploaded++;
+                setUploadProgress(Math.round(((i + 1) / files.length) * 100));
             }
 
             if (uploaded > 0) {
@@ -142,6 +145,7 @@ const Gallery = ({ isOpen, onClose, user }) => {
             }
         } catch (err) {
             console.error('Upload error:', err);
+            toast.error('Error al subir la imagen. Revisá tu configuración de Cloudinary.');
         } finally {
             setUploading(false);
             setUploadProgress(0);
@@ -153,15 +157,11 @@ const Gallery = ({ isOpen, onClose, user }) => {
         if (!confirm('¿Seguro que querés eliminar esta foto?')) return;
 
         try {
-            // Delete from Storage
-            const storageRef = ref(storage, photo.storagePath);
-            await deleteObject(storageRef);
-
-            // Delete from Firestore
+            // Delete from Firestore (image stays in Cloudinary — clean up from dashboard if needed)
             await deleteDoc(doc(db, 'gallery', photo.id));
             toast.success('Foto eliminada');
 
-            // If lightbox was showing this photo, close it
+            // If lightbox was showing this photo, adjust
             if (lightboxIndex !== null) {
                 if (photos.length <= 1) {
                     setLightboxIndex(null);
@@ -173,6 +173,12 @@ const Gallery = ({ isOpen, onClose, user }) => {
             console.error('Delete error:', err);
             toast.error('Error al eliminar la foto');
         }
+    };
+
+    // Build optimized Cloudinary URL with transformations
+    const getThumbnailUrl = (url) => {
+        // Insert transformation before /upload/ for auto-optimized thumbnails
+        return url.replace('/upload/', '/upload/w_600,q_auto,f_auto/');
     };
 
     if (!isOpen) return null;
@@ -194,7 +200,7 @@ const Gallery = ({ isOpen, onClose, user }) => {
 
                     <div className="flex items-center gap-3">
                         {/* UPLOAD BUTTON (admin only) */}
-                        {user && (
+                        {isAdmin && (
                             <label className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm cursor-pointer transition-all ${uploading ? 'bg-slate-700 text-slate-400 cursor-wait' : 'bg-purple-600 hover:bg-purple-500 text-white'}`}>
                                 {uploading ? (
                                     <>
@@ -239,7 +245,7 @@ const Gallery = ({ isOpen, onClose, user }) => {
                         <div className="flex flex-col items-center justify-center h-64 text-slate-500">
                             <Images size={48} className="mb-4 opacity-50" />
                             <p className="text-lg font-medium">No hay fotos todavía</p>
-                            {user && <p className="text-sm mt-1">Usá el botón "Subir fotos" para agregar.</p>}
+                            {isAdmin && <p className="text-sm mt-1">Usá el botón "Subir fotos" para agregar.</p>}
                         </div>
                     ) : (
                         <div className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3">
@@ -250,7 +256,7 @@ const Gallery = ({ isOpen, onClose, user }) => {
                                     onClick={() => setLightboxIndex(index)}
                                 >
                                     <img
-                                        src={photo.url}
+                                        src={getThumbnailUrl(photo.url)}
                                         alt=""
                                         loading="lazy"
                                         className="w-full object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105"
@@ -259,7 +265,7 @@ const Gallery = ({ isOpen, onClose, user }) => {
                                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 rounded-2xl" />
 
                                     {/* Delete button (admin only) */}
-                                    {user && (
+                                    {isAdmin && (
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -306,7 +312,7 @@ const Gallery = ({ isOpen, onClose, user }) => {
                         </button>
                     )}
 
-                    {/* Image */}
+                    {/* Image — full quality from Cloudinary */}
                     <img
                         src={photos[lightboxIndex].url}
                         alt=""
