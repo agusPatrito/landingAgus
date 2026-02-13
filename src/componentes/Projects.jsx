@@ -36,8 +36,6 @@ const Projects = () => {
                     <Cpu className="absolute -bottom-12 -right-12 text-blue-500/5 w-64 h-64 group-hover:rotate-12 transition-transform duration-700" />
                 </div>
 
-
-                {/* --- WOODWORKING (FLIP CARD) - (Sin cambios estructurales) --- */}
                 <div className="md:col-span-2 md:row-span-1 group rounded-3xl [perspective:1000px]">
                     <div className="relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
                         {/* Cara FRONTAL */}
@@ -91,11 +89,11 @@ const Projects = () => {
 
                             <img
                                 src={fotoPDE}
-                                alt="Food Photography"
+                                alt="Photography"
                                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
                             />
                             <div className="absolute inset-0 bg-black/30 flex items-end p-6">
-                                <p className="text-white font-bold text-sm">Food & Lifestyle Portfolio</p>
+                                <p className="text-white font-bold text-sm">Lifestyle Portfolio</p>
                             </div>
                         </div>
 
