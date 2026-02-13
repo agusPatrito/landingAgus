@@ -1,4 +1,4 @@
-// src/components/Navbar.jsx
+
 const Navbar = ({ user, onLoginClick, onLogout }) => {
     return (
         <nav className="fixed top-0 w-full z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
@@ -6,7 +6,7 @@ const Navbar = ({ user, onLoginClick, onLogout }) => {
                 <span className="text-cyan-400 font-bold text-xl tracking-tighter">AGUS.DEV</span>
 
                 <div className="flex items-center gap-6 text-sm font-medium text-slate-300">
-                    <a href="#proyectos" className="hidden md:block hover:text-cyan-400 transition-colors">Proyectos</a>
+                    <a href="proyectos" className="hidden md:block hover:text-cyan-400 transition-colors">Proyectos</a>
 
                     {user ? (
                         <div className="flex items-center gap-4">
