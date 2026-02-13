@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import { Camera, Hammer, Cpu, GraduationCap } from 'lucide-react';
 import mesa from '../assets/images/mesa_kerf.jpg';
 import fotoPDE from '../assets/images/fotoPDE.jpg';
+import Gallery from './Gallery';
 
-const Projects = () => {
+const Projects = ({ user }) => {
+    const [galleryOpen, setGalleryOpen] = useState(false);
+
     return (
         <section id="proyectos" className="py-20 px-4 max-w-6xl mx-auto">
             <div className="flex items-center gap-4 mb-12">
@@ -12,7 +16,7 @@ const Projects = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-full md:h-[500px]">
 
-                {/* --- PROTAGONISTA: Ingeniería (Sin cambios) --- */}
+                {/* --- PROTAGONISTA: Ingeniería --- */}
                 <div className="md:col-span-2 md:row-span-2 bg-linear-to-br from-blue-900/20 to-slate-800/40 border border-slate-700 p-8 rounded-3xl flex flex-col justify-between hover:border-blue-500/50 transition-all group relative overflow-hidden">
                     <div>
                         <div className="flex justify-between items-start">
@@ -36,6 +40,7 @@ const Projects = () => {
                     <Cpu className="absolute -bottom-12 -right-12 text-blue-500/5 w-64 h-64 group-hover:rotate-12 transition-transform duration-700" />
                 </div>
 
+                {/* --- WOODWORKING (FLIP CARD) --- */}
                 <div className="md:col-span-2 md:row-span-1 group rounded-3xl [perspective:1000px]">
                     <div className="relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
                         {/* Cara FRONTAL */}
@@ -53,7 +58,6 @@ const Projects = () => {
                         </div>
                         {/* Cara TRASERA */}
                         <div className="absolute inset-0 w-full h-full bg-slate-900 rounded-3xl overflow-hidden border border-amber-700/50 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-
                             <img
                                 src={mesa}
                                 alt="Mesa con Kerf Bending"
@@ -64,12 +68,13 @@ const Projects = () => {
                 </div>
 
 
-                {/* --- FOTOGRAFÍA (AHORA TAMBIÉN ES FLIP CARD) --- */}
-                <div className="md:col-span-2 md:row-span-1 group rounded-3xl [perspective:1000px]">
-
+                {/* --- FOTOGRAFÍA (CLICKEABLE → abre galería) --- */}
+                <div
+                    className="md:col-span-2 md:row-span-1 group rounded-3xl [perspective:1000px] cursor-pointer"
+                    onClick={() => setGalleryOpen(true)}
+                >
                     {/* Flipper */}
                     <div className="relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-
                         {/* Cara FRONTAL */}
                         <div className="absolute inset-0 w-full h-full bg-linear-to-br from-purple-900/20 to-slate-800/40 border border-slate-700 p-8 rounded-3xl flex flex-col justify-center overflow-hidden [backface-visibility:hidden]">
                             <div className="flex items-center gap-4">
@@ -78,29 +83,30 @@ const Projects = () => {
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold text-white">Fotografía</h3>
-                                    <p className="text-slate-400 text-sm">Capturando detalles. Pasa el mouse.</p>
+                                    <p className="text-slate-400 text-sm">Capturando detalles. Click para ver galería.</p>
                                 </div>
                             </div>
                             <Camera className="absolute -bottom-6 -right-6 text-purple-500/5 w-32 h-32" />
                         </div>
 
-
+                        {/* Cara TRASERA */}
                         <div className="absolute inset-0 w-full h-full bg-slate-900 rounded-3xl overflow-hidden border border-purple-700/50 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-
                             <img
                                 src={fotoPDE}
                                 alt="Photography"
                                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
                             />
                             <div className="absolute inset-0 bg-black/30 flex items-end p-6">
-                                <p className="text-white font-bold text-sm">Lifestyle Portfolio</p>
+                                <p className="text-white font-bold text-sm">Lifestyle Portfolio — Click para ver más</p>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
             </div>
+
+            {/* Gallery Modal */}
+            <Gallery isOpen={galleryOpen} onClose={() => setGalleryOpen(false)} user={user} />
         </section>
     );
 };

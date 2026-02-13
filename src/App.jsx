@@ -41,7 +41,7 @@ function App() {
         ) : (
           <>
             <Hero user={user} />
-            <Projects />
+            <Projects user={user} />
           </>
         )}
       </main>
