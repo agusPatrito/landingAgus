@@ -331,7 +331,7 @@ const Gallery = ({ isOpen, onClose, user }) => {
                     )}
 
                     {/* Admin delete in lightbox */}
-                    {user && (
+                    {isAdmin && (
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
