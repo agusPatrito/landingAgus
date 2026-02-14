@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import EditableText from './EditableText';
+import ContactModal from './ContactModal';
 
 const Hero = ({ user }) => {
+    const [isContactOpen, setIsContactOpen] = useState(false);
+
     return (
         <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
             {/* Background Gradient */}
@@ -37,11 +41,16 @@ const Hero = ({ user }) => {
                     <a href="#proyectos" className="px-8 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-cyan-900/20 w-full sm:w-auto">
                         Ver Proyectos
                     </a>
-                    <a href="mailto:aguspatrito@gmail.com" className="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white font-medium rounded-xl border border-slate-700 transition-all w-full sm:w-auto">
+                    <button
+                        onClick={() => setIsContactOpen(true)}
+                        className="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white font-medium rounded-xl border border-slate-700 transition-all w-full sm:w-auto cursor-pointer"
+                    >
                         Contactame
-                    </a>
+                    </button>
                 </div>
             </div>
+
+            <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
         </section>
     );
 };
