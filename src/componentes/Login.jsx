@@ -77,8 +77,8 @@ const Login = () => {
     };
 
     return (
-        <div className="max-w-md w-full p-8 bg-slate-800/40 backdrop-blur-xl rounded-3xl border border-slate-700/50 shadow-2xl">
-            <h2 className="text-3xl font-bold text-center text-white mb-8 tracking-tight">
+        <div className="max-w-md w-full p-6 sm:p-8 bg-slate-800/40 backdrop-blur-xl rounded-3xl border border-slate-700/50 shadow-2xl">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center text-white mb-6 sm:mb-8 tracking-tight">
                 {isRegister ? 'Crear Cuenta' : 'Admin Login'}
             </h2>
 

@@ -27,21 +27,23 @@ const EditableText = ({ user, docId, field, initialValue, className }) => {
     if (!user) return <span className={className}>{initialValue}</span>;
 
     return (
-        <div className={`relative group/edit ${className}`}>
+        <div className={`relative group/edit ${className} max-w-full`}>
             {isEditing ? (
-                <div className="flex items-center gap-2 w-full">
+                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 w-full">
                     <textarea
                         value={value}
                         onChange={(e) => setValue(e.target.value)}
-                        className="bg-slate-800 border border-cyan-500 rounded p-2 w-full text-white outline-none"
-                        rows={2}
+                        className="bg-slate-800 border border-cyan-500 rounded p-2 w-full text-white outline-none min-h-[80px] sm:min-h-0 text-base shadow-lg"
+                        autoFocus
                     />
-                    <button onClick={handleSave} disabled={loading} className="text-green-400 hover:text-green-300">
-                        <Check size={20} />
-                    </button>
-                    <button onClick={() => setIsEditing(false)} className="text-red-400 hover:text-red-300">
-                        <X size={20} />
-                    </button>
+                    <div className="flex gap-2">
+                        <button onClick={handleSave} disabled={loading} className="p-2 bg-green-500/10 text-green-400 hover:bg-green-500/20 rounded-lg transition-colors">
+                            <Check size={20} />
+                        </button>
+                        <button onClick={() => setIsEditing(false)} className="p-2 bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors">
+                            <X size={20} />
+                        </button>
+                    </div>
                 </div>
             ) : (
                 <div className="flex items-center gap-3">

@@ -286,19 +286,19 @@ const Gallery = ({ isOpen, onClose, user }) => {
             {/* LIGHTBOX */}
             {lightboxIndex !== null && photos[lightboxIndex] && (
                 <div
-                    className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center"
+                    className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4 md:p-0"
                     onClick={() => setLightboxIndex(null)}
                 >
                     {/* Close */}
                     <button
                         onClick={() => setLightboxIndex(null)}
-                        className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white transition-colors z-10"
+                        className="absolute top-4 right-4 p-3 bg-black/50 rounded-full text-slate-400 hover:text-white transition-colors z-20 backdrop-blur-sm"
                     >
-                        <X size={28} />
+                        <X size={24} />
                     </button>
 
                     {/* Counter */}
-                    <div className="absolute top-4 left-4 text-slate-400 text-sm font-medium">
+                    <div className="absolute top-4 left-4 text-slate-400 text-sm font-medium z-10 bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm">
                         {lightboxIndex + 1} / {photos.length}
                     </div>
 
@@ -306,9 +306,9 @@ const Gallery = ({ isOpen, onClose, user }) => {
                     {photos.length > 1 && (
                         <button
                             onClick={(e) => { e.stopPropagation(); navigateLightbox(-1); }}
-                            className="absolute left-2 md:left-6 p-3 rounded-full bg-slate-800/60 hover:bg-slate-700 text-white transition-all backdrop-blur-sm z-10"
+                            className="absolute left-2 md:left-6 p-3 md:p-4 rounded-full bg-slate-800/60 hover:bg-slate-700 text-white transition-all backdrop-blur-sm z-20 shadow-lg"
                         >
-                            <ChevronLeft size={24} />
+                            <ChevronLeft size={24} className="w-6 h-6 md:w-8 md:h-8" />
                         </button>
                     )}
 
@@ -316,7 +316,7 @@ const Gallery = ({ isOpen, onClose, user }) => {
                     <img
                         src={photos[lightboxIndex].url}
                         alt=""
-                        className="max-h-[85vh] max-w-[90vw] object-contain rounded-xl shadow-2xl"
+                        className="max-h-[80vh] md:max-h-[85vh] max-w-full md:max-w-[90vw] object-contain rounded-xl shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     />
 
@@ -324,9 +324,9 @@ const Gallery = ({ isOpen, onClose, user }) => {
                     {photos.length > 1 && (
                         <button
                             onClick={(e) => { e.stopPropagation(); navigateLightbox(1); }}
-                            className="absolute right-2 md:right-6 p-3 rounded-full bg-slate-800/60 hover:bg-slate-700 text-white transition-all backdrop-blur-sm z-10"
+                            className="absolute right-2 md:right-6 p-3 md:p-4 rounded-full bg-slate-800/60 hover:bg-slate-700 text-white transition-all backdrop-blur-sm z-20 shadow-lg"
                         >
-                            <ChevronRight size={24} />
+                            <ChevronRight size={24} className="w-6 h-6 md:w-8 md:h-8" />
                         </button>
                     )}
 
@@ -337,10 +337,10 @@ const Gallery = ({ isOpen, onClose, user }) => {
                                 e.stopPropagation();
                                 handleDelete(photos[lightboxIndex]);
                             }}
-                            className="absolute bottom-6 right-6 flex items-center gap-2 px-4 py-2 bg-red-600/80 hover:bg-red-500 text-white rounded-xl transition-all backdrop-blur-sm"
+                            className="absolute bottom-6 right-6 flex items-center gap-2 px-4 py-2 bg-red-600/80 hover:bg-red-500 text-white rounded-xl transition-all backdrop-blur-sm z-20"
                         >
                             <Trash2 size={16} />
-                            Eliminar
+                            <span className="hidden sm:inline">Eliminar</span>
                         </button>
                     )}
                 </div>

@@ -14,10 +14,10 @@ const Projects = ({ user }) => {
                 <div className="h-[1px] flex-1 bg-slate-800"></div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-full md:h-[500px]">
+            <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-auto md:h-[500px]">
 
                 {/* --- PROTAGONISTA: Ingeniería --- */}
-                <div className="md:col-span-2 md:row-span-2 bg-linear-to-br from-blue-900/20 to-slate-800/40 border border-slate-700 p-8 rounded-3xl flex flex-col justify-between hover:border-blue-500/50 transition-all group relative overflow-hidden">
+                <div className="md:col-span-2 md:row-span-2 min-h-[400px] md:min-h-0 bg-linear-to-br from-blue-900/20 to-slate-800/40 border border-slate-700 p-6 md:p-8 rounded-3xl flex flex-col justify-between hover:border-blue-500/50 transition-all group relative overflow-hidden">
                     <div>
                         <div className="flex justify-between items-start">
                             <div className="bg-blue-500/10 w-fit p-3 rounded-2xl mb-6">
@@ -28,7 +28,7 @@ const Projects = ({ user }) => {
                                 <span className="text-xs font-semibold text-blue-300 uppercase tracking-wider">5to Año</span>
                             </div>
                         </div>
-                        <h3 className="text-3xl font-bold text-white mb-4">Ingeniería en Sistemas</h3>
+                        <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">Ingeniería en Sistemas</h3>
                         <p className="text-slate-400 text-lg leading-relaxed">
                             Mi enfoque no es solo escribir código, sino diseñar soluciones escalables.
                             Desde la arquitectura del backend hasta la experiencia de usuario en el frontend.
@@ -41,7 +41,7 @@ const Projects = ({ user }) => {
                 </div>
 
                 {/* --- WOODWORKING (FLIP CARD) --- */}
-                <div className="md:col-span-2 md:row-span-1 group rounded-3xl [perspective:1000px]">
+                <div className="md:col-span-2 md:row-span-1 h-[240px] md:h-auto group rounded-3xl [perspective:1000px]">
                     <div className="relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
                         {/* Cara FRONTAL */}
                         <div className="absolute inset-0 w-full h-full bg-linear-to-br from-amber-900/20 to-slate-800/40 border border-slate-700 p-8 rounded-3xl flex flex-col justify-center overflow-hidden [backface-visibility:hidden]">
@@ -70,7 +70,7 @@ const Projects = ({ user }) => {
 
                 {/* --- FOTOGRAFÍA (CLICKEABLE → abre galería) --- */}
                 <div
-                    className="md:col-span-2 md:row-span-1 group rounded-3xl [perspective:1000px] cursor-pointer"
+                    className="md:col-span-2 md:row-span-1 h-[240px] md:h-auto group rounded-3xl [perspective:1000px] cursor-pointer"
                     onClick={() => setGalleryOpen(true)}
                 >
                     {/* Flipper */}

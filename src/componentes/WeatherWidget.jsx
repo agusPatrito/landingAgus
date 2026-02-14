@@ -51,14 +51,17 @@ const WeatherWidget = () => {
     if (error) return null; // Si hay error, mejor no mostrar nada para no ensuciar el navbar
 
     return (
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-300 text-sm font-medium">
+        <div className="flex items-center gap-1.5 sm:gap-2 px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-300 text-xs sm:text-sm font-medium">
             {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin text-cyan-500" />
+                <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin text-cyan-500" />
             ) : (
                 <>
-                    {getWeatherIcon(weather.weather_code)}
+                    {/* Icono más chico en mobile */}
+                    <div className="[&>svg]:w-4 [&>svg]:h-4 sm:[&>svg]:w-5 sm:[&>svg]:h-5">
+                        {getWeatherIcon(weather.weather_code)}
+                    </div>
                     <span>{Math.round(weather.temperature_2m)}°C</span>
-                    <span className="hidden lg:inline text-xs text-slate-500 ml-1">CBA</span>
+                    <span className="hidden sm:inline text-xs text-slate-500 ml-1">CBA</span>
                 </>
             )}
         </div>
