@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import WeatherWidget from './WeatherWidget';
 
 const Navbar = ({ user, onLoginClick, onLogout }) => {
     return (
@@ -6,6 +8,7 @@ const Navbar = ({ user, onLoginClick, onLogout }) => {
                 <span className="text-cyan-400 font-bold text-xl tracking-tighter">AGUS.DEV</span>
 
                 <div className="flex items-center gap-6 text-sm font-medium text-slate-300">
+                    <WeatherWidget />
                     <a href="proyectos" className="hidden md:block hover:text-cyan-400 transition-colors">Proyectos</a>
 
                     {user ? (
